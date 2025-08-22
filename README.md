@@ -1,1 +1,688 @@
-# Sinner1906.github.io
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteos de Todo - Participa y Gana</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff5722;
+            --secondary: #2196f3;
+            --dark: #333;
+            --light: #f9f9f9;
+            --success: #4caf50;
+            --warning: #ff9800;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            color: var(--warning);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--warning);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .hero {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin: 2rem 0;
+            color: var(--dark);
+            font-size: 2rem;
+        }
+        
+        .wheel-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        #wheel {
+            width: 400px;
+            height: 400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        #wheel-canvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .wheel-button {
+            margin-top: 2rem;
+            background: var(--secondary);
+            font-size: 1.2rem;
+            padding: 1rem 2rem;
+        }
+        
+        .participants {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .participants-list {
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .participant {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .participant:last-child {
+            border-bottom: none;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+        
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .payment-options {
+            display: flex;
+            justify-content: space-between;
+            margin: 1.5rem 0;
+        }
+        
+        .payment-option {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-option:hover, .payment-option.selected {
+            border-color: var(--primary);
+            background: rgba(255, 87, 34, 0.1);
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0.5rem;
+            }
+            
+            #wheel {
+                width: 300px;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Sorteos de <span>Todo</span></div>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#ruleta">Ruleta</a></li>
+                <li><a href="#participantes">Participantes</a></li>
+                <li><a href="#" id="login-btn">Iniciar Sesión</a></li>
+                <li><a href="#" id="register-btn">Registrarse</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="hero" id="inicio">
+            <h1>¡Bienvenido a Sorteos de Todo!</h1>
+            <p>Participa en nuestros emocionantes sorteos con ruleta. ¡Cada participación te acerca a ganar increíbles premios!</p>
+            <a href="#ruleta" class="btn">Participar Ahora</a>
+        </section>
+
+        <h2 class="section-title">Ruleta de Sorteos</h2>
+        <section class="wheel-container" id="ruleta">
+            <div id="wheel">
+                <canvas id="wheel-canvas"></canvas>
+            </div>
+            <button class="btn wheel-button" id="spin-btn">Girar la Ruleta</button>
+            <p id="result" style="margin-top: 1rem; font-weight: bold;"></p>
+        </section>
+
+        <h2 class="section-title">Últimos Participantes</h2>
+        <section class="participants" id="participantes">
+            <div class="participants-list" id="participants-list">
+                <!-- Los participantes se cargarán aquí dinámicamente -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div class="modal" id="register-modal">
+        <div class="modal-content">
+            <h2>Crear Cuenta</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="name">Nombre Completo</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn">Registrarse</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">¿Ya tienes cuenta? <a href="#" id="go-to-login">Inicia Sesión</a></p>
+        </div>
+    </div>
+
+    <!-- Modal de Login -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <h2>Iniciar Sesión</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Correo Electrónico</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn">Iniciar Sesión</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">¿No tienes cuenta? <a href="#" id="go-to-register">Regístrate</a></p>
+        </div>
+    </div>
+
+    <!-- Modal de Pago -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <h2>Completar Pago</h2>
+            <p>Para participar en el sorteo, complete el pago de $5.00 USD</p>
+            
+            <div class="payment-options">
+                <div class="payment-option" data-method="paypal">
+                    <img src="https://logos-world.net/wp-content/uploads/2020/07/PayPal-Logo.png" height="30" alt="PayPal">
+                </div>
+                <div class="payment-option" data-method="card">
+                    <span>Tarjeta de Crédito</span>
+                </div>
+            </div>
+            
+            <div id="paypal-button-container" style="display: none; margin-top: 1.5rem;"></div>
+            
+            <form id="card-form" style="display: none; margin-top: 1.5rem;">
+                <div class="form-group">
+                    <label for="card-number">Número de Tarjeta</label>
+                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div class="form-group">
+                    <label for="card-name">Nombre en la Tarjeta</label>
+                    <input type="text" id="card-name" required>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label for="card-expiry">Fecha de Expiración</label>
+                        <input type="text" id="card-expiry" placeholder="MM/AA" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label for="card-cvc">CVC</label>
+                        <input type="text" id="card-cvc" placeholder="123" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Pagar y Participar</button>
+            </form>
+            
+            <button class="btn" style="margin-top: 1rem; width: 100%; background: #ccc; color: #333;" id="cancel-payment">Cancelar</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Sorteos de Todo - Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        // Datos de ejemplo para la ruleta
+        const prizes = [
+            "iPhone 13", 
+            "Viaje a Cancún", 
+            "$1000 USD", 
+            "Consola PS5", 
+            "Laptop Gaming", 
+            "Smart TV 55'",
+            "Tablet Samsung",
+            "Audífonos Bose"
+        ];
+        
+        // Colores para los segmentos de la ruleta
+        const colors = ['#ff5722', '#2196f3', '#4caf50', '#ff9800', '#9c27b0', '#009688', '#e91e63', '#3f51b5'];
+        
+        // Variables para el funcionamiento de la ruleta
+        let canvas, ctx;
+        let centerX, centerY, radius;
+        let currentRotation = 0;
+        let spinning = false;
+        
+        // Usuarios de ejemplo
+        let participants = [
+            { name: "Ana García", participationDate: "2023-05-15" },
+            { name: "Carlos López", participationDate: "2023-05-15" },
+            { name: "María Rodríguez", participationDate: "2023-05-14" },
+            { name: "José Martínez", participationDate: "2023-05-14" },
+            { name: "Laura Hernández", participationDate: "2023-05-13" }
+        ];
+        
+        // Inicialización cuando el DOM esté cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            initWheel();
+            updateParticipantsList();
+            setupEventListeners();
+        });
+        
+        function initWheel() {
+            canvas = document.getElementById('wheel-canvas');
+            ctx = canvas.getContext('2d');
+            
+            // Ajustar canvas para alta resolución en pantallas Retina
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = `${rect.width}px`;
+            canvas.style.height = `${rect.height}px`;
+            
+            centerX = canvas.width / (2 * dpr);
+            centerY = canvas.height / (2 * dpr);
+            radius = Math.min(centerX, centerY) - 10;
+            
+            drawWheel();
+        }
+        
+        function drawWheel() {
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Dibujar ruleta
+            const angleSegment = (2 * Math.PI) / prizes.length;
+            
+            for (let i = 0; i < prizes.length; i++) {
+                const startAngle = i * angleSegment + currentRotation;
+                const endAngle = (i + 1) * angleSegment + currentRotation;
+                
+                // Dibujar segmento
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+                ctx.stroke();
+                
+                // Dibujar texto
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + angleSegment / 2);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Montserrat';
+                ctx.fillText(prizes[i], radius - 10, 5);
+                ctx.restore();
+            }
+            
+            // Dibujar centro
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI);
+            ctx.fillStyle = '#333';
+            ctx.fill();
+            
+            // Dibujar puntero
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY - radius - 20);
+            ctx.lineTo(centerX - 10, centerY - radius);
+            ctx.lineTo(centerX + 10, centerY - radius);
+            ctx.closePath();
+            ctx.fillStyle = '#333';
+            ctx.fill();
+        }
+        
+        function spinWheel() {
+            if (spinning) return;
+            
+            // Verificar si el usuario ha iniciado sesión
+            const isLoggedIn = localStorage.getItem('userLoggedIn');
+            if (!isLoggedIn) {
+                alert('Debe iniciar sesión para participar en el sorteo');
+                document.getElementById('login-modal').style.display = 'flex';
+                return;
+            }
+            
+            // Mostrar modal de pago
+            document.getElementById('payment-modal').style.display = 'flex';
+        }
+        
+        function completePayment() {
+            // Simular procesamiento de pago
+            spinning = true;
+            document.getElementById('payment-modal').style.display = 'none';
+            
+            // Animación de giro
+            const spinTime = 3000; // 3 segundos
+            const startTime = Date.now();
+            const spins = 5 + Math.random() * 5; // Entre 5 y 10 giros
+            const totalRotation = spins * 2 * Math.PI;
+            
+            const animate = () => {
+                const elapsed = Date.now() - startTime;
+                if (elapsed < spinTime) {
+                    // Calcular rotación actual con easing
+                    const progress = elapsed / spinTime;
+                    const easedProgress = 1 - Math.pow(1 - progress, 3); // Easing cúbico
+                    currentRotation = easedProgress * totalRotation;
+                    
+                    drawWheel();
+                    requestAnimationFrame(animate);
+                } else {
+                    // Fin de la animación
+                    currentRotation = totalRotation;
+                    drawWheel();
+                    
+                    // Determinar premio
+                    const finalAngle = currentRotation % (2 * Math.PI);
+                    const prizeIndex = Math.floor(prizes.length - (finalAngle / (2 * Math.PI)) * prizes.length) % prizes.length;
+                    
+                    // Mostrar resultado
+                    document.getElementById('result').textContent = `¡Felicidades! Has ganado: ${prizes[prizeIndex]}`;
+                    
+                    // Agregar participante
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    participants.unshift({
+                        name: user.name,
+                        participationDate: new Date().toISOString().split('T')[0]
+                    });
+                    
+                    updateParticipantsList();
+                    spinning = false;
+                }
+            };
+            
+            animate();
+        }
+        
+        function updateParticipantsList() {
+            const list = document.getElementById('participants-list');
+            list.innerHTML = '';
+            
+            participants.forEach(participant => {
+                const div = document.createElement('div');
+                div.className = 'participant';
+                div.innerHTML = `
+                    <span>${participant.name}</span>
+                    <span>${participant.participationDate}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+        
+        function setupEventListeners() {
+            // Botón de girar ruleta
+            document.getElementById('spin-btn').addEventListener('click', spinWheel);
+            
+            // Modales de registro y login
+            document.getElementById('register-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('register-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('login-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('login-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('go-to-login').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('register-modal').style.display = 'none';
+                document.getElementById('login-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('go-to-register').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('login-modal').style.display = 'none';
+                document.getElementById('register-modal').style.display = 'flex';
+            });
+            
+            // Cerrar modales al hacer clic fuera
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Formularios de registro y login
+            document.getElementById('register-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                // Guardar usuario (simulado)
+                localStorage.setItem('user', JSON.stringify({ name, email, password }));
+                localStorage.setItem('userLoggedIn', 'true');
+                
+                alert('Registro exitoso. Ahora puede participar en sorteos.');
+                document.getElementById('register-modal').style.display = 'none';
+            });
+            
+            document.getElementById('login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                // Verificar credenciales (simulado)
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                
+                if (user.email === email && user.password === password) {
+                    localStorage.setItem('userLoggedIn', 'true');
+                    alert('Inicio de sesión exitoso.');
+                    document.getElementById('login-modal').style.display = 'none';
+                } else {
+                    alert('Credenciales incorrectas. Intente nuevamente.');
+                }
+            });
+            
+            // Opciones de pago
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    
+                    const method = this.getAttribute('data-method');
+                    if (method === 'paypal') {
+                        document.getElementById('paypal-button-container').style.display = 'block';
+                        document.getElementById('card-form').style.display = 'none';
+                    } else {
+                        document.getElementById('paypal-button-container').style.display = 'none';
+                        document.getElementById('card-form').style.display = 'block';
+                    }
+                });
+            });
+            
+            // Formulario de tarjeta
+            document.getElementById('card-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                completePayment();
+            });
+            
+            // Botón de cancelar pago
+            document.getElementById('cancel-payment').addEventListener('click', function() {
+                document.getElementById('payment-modal').style.display = 'none';
+            });
+            
+            // Simular botón de PayPal
+            document.getElementById('paypal-button-container').addEventListener('click', completePayment);
+        }
+        
+        // Redibujar la ruleta cuando cambia el tamaño de la ventana
+        window.addEventListener('resize', initWheel);
+    </script>
+</body>
+</html>
